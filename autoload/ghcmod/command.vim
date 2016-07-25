@@ -271,4 +271,68 @@ function! s:open_quickfix() "{{{
   endif
 endfunction "}}}
 
+function! ghcmod#command#opendoc(fexp, force, vismode) "{{{
+  let l:path = s:buffer_path(a:force)
+  if empty(l:path)
+    return
+  endif
+  let l:fexp = a:fexp
+  if empty(l:fexp)
+    if a:vismode
+      let l:fexp = ghcmod#get_visual_selection()
+    else
+      let l:fexp = ghcmod#getHaskellIdentifier()
+    endif
+  end
+
+  let l:line = line('.')
+  let l:col = col('.')
+
+  let l:doc_url = ghcmod#get_doc_url(l:path, ghcmod#detect_module(), l:fexp, l:line, l:col)
+
+  if l:doc_url =~ '^file'
+    if exists('g:ghcmod_browser')
+        execute 'silent !' . g:ghcmod_browser . ' ' . l:doc_url . ' >& /dev/null &'
+        execute ':redraw!'
+    else
+      if has("win")
+        echo 'Error, not implemented. Go here: ' . l:doc_url
+      endif
+
+      if has("unix")
+        if system('uname')=~'Darwin'
+          " Redirect output to /dev/null?
+          execute "silent !open " . l:doc_url
+        else
+          execute "silent !xdg-open " . l:doc_url . ' >& /dev/null'
+        endif
+
+        execute ':redraw!'
+      endif
+    endif
+  else
+    echo l:doc_url
+  endif
+endfunction "}}}
+
+function! ghcmod#command#echo_doc_url(fexp, force, vismode) "{{{
+  let l:path = s:buffer_path(a:force)
+  if empty(l:path)
+    return
+  endif
+  let l:fexp = a:fexp
+  if empty(l:fexp)
+    if a:vismode
+      let l:fexp = ghcmod#get_visual_selection()
+    else
+      let l:fexp = ghcmod#getHaskellIdentifier()
+    endif
+  end
+
+  let l:line = line('.')
+  let l:col = col('.')
+
+  echo ghcmod#get_doc_url(l:path, ghcmod#detect_module(), l:fexp, l:line, l:col)
+endfunction "}}}
+
 " vim: set ts=2 sw=2 et fdm=marker:

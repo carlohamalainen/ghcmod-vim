@@ -22,6 +22,27 @@ function! ghcmod#info(fexp, path, ...) "{{{
   return s:remove_dummy_prefix(l:output)
 endfunction "}}}
 
+function! ghcmod#get_visual_selection()
+  " http://stackoverflow.com/a/6271254
+  let [lnum1, col1] = getpos("'<")[1:2]
+  let [lnum2, col2] = getpos("'>")[1:2]
+  let lines = getline(lnum1, lnum2)
+  let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
+  let lines[0] = lines[0][col1 - 1:]
+  return join(lines, "\n")
+endfunction
+
+function! ghcmod#get_doc_url(path, module, fexp, line, col) "{{{
+  let l:cmd = ghcmod#build_command(['imported-from', a:path, a:line, a:col, a:fexp])
+  let l:output = ghcmod#system(l:cmd)
+  let l:lines = split(l:output, '\n')
+  let l:lastline = l:lines[-1]
+
+  if l:lastline =~ "^file.*"
+    return l:lastline
+  endif
+endfunction "}}}
+
 function! ghcmod#split(line, col, path, ...) "{{{
   " `ghc-mod split` is available since v5.0.0.
   let l:cmd = ghcmod#build_command(['split', a:path, a:line, a:col])
