@@ -290,21 +290,25 @@ function! ghcmod#command#opendoc(fexp, force, vismode) "{{{
 
   let l:doc_url = ghcmod#get_doc_url(l:path, ghcmod#detect_module(), l:fexp, l:line, l:col)
 
-  if l:doc_url =~ '^file'
+  let l:bits = split(l:doc_url)
+
+  if len(l:bits) == 3
+    let l:the_url = l:bits[-1]
+
     if exists('g:ghcmod_browser')
-        execute 'silent !' . g:ghcmod_browser . ' ' . l:doc_url . ' >& /dev/null &'
+        execute 'silent !' . g:ghcmod_browser . ' ' . l:the_url . ' >& /dev/null &'
         execute ':redraw!'
     else
       if has("win")
-        echo 'Error, not implemented. Go here: ' . l:doc_url
+        echo 'Error, not implemented. Go here: ' . l:the_url
       endif
 
       if has("unix")
         if system('uname')=~'Darwin'
           " Redirect output to /dev/null?
-          execute "silent !open " . l:doc_url
+          execute "silent !open " . l:the_url
         else
-          execute "silent !xdg-open " . l:doc_url . ' >& /dev/null'
+          execute "silent !xdg-open " . l:the_url . ' >& /dev/null'
         endif
 
         execute ':redraw!'

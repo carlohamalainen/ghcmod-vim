@@ -36,10 +36,9 @@ function! ghcmod#get_doc_url(path, module, fexp, line, col) "{{{
   let l:cmd = ghcmod#build_command(['imported-from', a:path, a:line, a:col, a:fexp])
   let l:output = ghcmod#system(l:cmd)
   let l:lines = split(l:output, '\n')
-  let l:lastline = l:lines[-1]
 
-  if l:lastline =~ "^file.*"
-    return l:lastline
+  if len(l:lines) > 0
+    return l:lines[0]
   endif
 endfunction "}}}
 
