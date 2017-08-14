@@ -32,8 +32,8 @@ function! ghcmod#get_visual_selection()
   return join(lines, "\n")
 endfunction
 
-function! ghcmod#get_doc_url(path, module, fexp, line, col) "{{{
-  let l:cmd = ghcmod#build_command(['imported-from', a:path, a:line, a:col, a:fexp])
+function! ghcmod#get_doc_url(path, line, col) "{{{
+  let l:cmd = ghcmod#build_command(['imported-from', a:path, a:line, a:col])
   let l:output = ghcmod#system(l:cmd)
   let l:lines = split(l:output, '\n')
 

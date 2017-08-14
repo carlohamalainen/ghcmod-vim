@@ -288,7 +288,7 @@ function! ghcmod#command#opendoc(fexp, force, vismode) "{{{
   let l:line = line('.')
   let l:col = col('.')
 
-  let l:doc_url = ghcmod#get_doc_url(l:path, ghcmod#detect_module(), l:fexp, l:line, l:col)
+  let l:doc_url = ghcmod#get_doc_url(l:path, l:line, l:col)
 
   let l:bits = split(l:doc_url)
 
@@ -336,7 +336,7 @@ function! ghcmod#command#echo_doc_url(fexp, force, vismode) "{{{
   let l:line = line('.')
   let l:col = col('.')
 
-  echo ghcmod#get_doc_url(l:path, ghcmod#detect_module(), l:fexp, l:line, l:col)
+  echo ghcmod#get_doc_url(l:path, l:line, l:col)
 endfunction "}}}
 
 " vim: set ts=2 sw=2 et fdm=marker:
